@@ -19,7 +19,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "tim.h"
-#include "usart.h"
 #include "usb_device.h"
 #include "gpio.h"
 
@@ -118,12 +117,11 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM3_Init();
   MX_TIM4_Init();
-  MX_USART1_UART_Init();
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
-  SerialInit();
   MotorInit();
   tProcess = NONE;
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -169,7 +167,6 @@ int main(void)
 	  	  	      switch(tProcess)
 	  	  	      {
 	  	  	        case NONE:
-	  	  	          SerialAcceptReceive();
 	  	  	          break;
 	  	  	        case SPID:
 	  	  	          SerialWriteComm(g_strCommand, g_nOption, g_nData);
@@ -182,7 +179,7 @@ int main(void)
 	  	  	          tPIDControl.dKp = (float)g_nData[0] + (float)g_nData[1]/10;
 	  	  	          tPIDControl.dKi = (float)g_nData[2] + (float)g_nData[3]/100;
 	  	  	          tPIDControl.dKd = ((float)g_nData[4] + (float)g_nData[5]/(pow((float)10,(float)g_nData[6])))/100;
-
+					  memset(tPIDControl.nActPosSample, 0, sizeof(tPIDControl.nActPosSample));
 	  	  	          tProcess = NONE;
 	  	  	          break;
 	  	  	        case CTUN_RES:
@@ -212,7 +209,6 @@ int main(void)
 	  	  	            HAL_Delay(30);
 	  	  	          }
 	  	  	          g_bDataAvailable = false;
-	  	  	          SerialAcceptReceive();
 	  	  	          memset(g_strCommand, '\0', 4);
 	  	  	          tProcess = NONE;
 	  	  	          break;
@@ -276,11 +272,10 @@ int main(void)
 	  	  	            memset(g_strTxCommand, '\0', 4);
 	  	  	            memset(g_nTxOption, '\0', 3);
 	  	  	            memset(g_nTxData, '\0', 8);
-
+                                                                
 	  	  	            HAL_Delay(30);
 	  	  	          }
 	  	  	          g_bDataAvailable = false;
-	  	  	          SerialAcceptReceive();
 	  	  	          tProcess = NONE;
 	  	  	          break;
 	  	  	      }

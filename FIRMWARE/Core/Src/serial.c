@@ -13,7 +13,6 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "usart.h"
 #include "usbd_cdc_if.h"
 
 
@@ -55,18 +54,6 @@ bool StrCompare(uint8_t *pBuff, uint8_t *pSample, uint8_t nSize)
     return true;
 }
 
-
-//receive data
-void SerialInit(void)
-{
-    HAL_UART_Receive_IT(&huart1, (uint8_t *)g_nRxBuff, MAX_LEN);
-}
-
-//receive data
-void SerialAcceptReceive(void)
-{	HAL_UART_Receive_IT(&huart1, (uint8_t*)g_nRxBuff, MAX_LEN);
-}
-
 //send data to GUI
 void SerialWriteComm(uint8_t *pStrCmd, uint8_t *pOpt, uint8_t *pData)
 {
@@ -86,7 +73,6 @@ void SerialWriteComm(uint8_t *pStrCmd, uint8_t *pOpt, uint8_t *pData)
     nIndex += 1;
     memcpy(pBuff + nIndex, ETX, 1);
 
-    //HAL_UART_Transmit(&huart1, pBuff, MAX_LEN, 1000);
 	CDC_Transmit_FS(pBuff, MAX_LEN);
 
     free(pBuff);
@@ -103,21 +89,5 @@ void SerialParse(uint8_t *pBuff)
     memcpy(g_nData, subString(g_nRxBuff, 8,8), 8);
   }
 }
-
-//interupt uart RX
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
-    if(huart ->Instance == huart1.Instance)
-  {
-    g_bDataAvailable = true;
-    SerialParse(g_nRxBuff);
-  }
-}
-
-
-
-
-
-
 
 

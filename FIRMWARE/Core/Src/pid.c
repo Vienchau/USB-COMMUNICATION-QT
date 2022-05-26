@@ -1,10 +1,3 @@
-/*
- * pid.c
- *
- *  Created on: Apr 14, 2022
- *      Author: vienchau
- */
-
 
 #include "pid.h"
 #include "tim.h"

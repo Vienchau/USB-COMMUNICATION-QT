@@ -59,7 +59,7 @@ void MotorInit(void)
     PIDReset(&tPIDControl);
     PIDInit(&tPIDControl, 1., 0., 0.00);
     MotorSetDir(0);
-    //MotorSetDuty(0);
+
 }
 
 uint16_t ConvertDegToPulse(uint16_t nDeg)
